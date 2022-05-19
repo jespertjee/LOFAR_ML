@@ -66,8 +66,9 @@ if __name__ == "__main__":
     data = []
 
     # Opening all the data and converting it to a pandas dataframe
-    file_locations = ['../Data/AGNclasses_Bootes_v1.fits', '../Data/AGNclasses_Lockman_v1.fits',
-                      '../Data/AGNclasses_ElaisN1_v1.fits']
+    file_locations = ['../../Data/Philip_data/AGNclasses_Bootes_v1.fits',
+                      '../../Data/Philip_data/AGNclasses_Lockman_v1.fits',
+                      '../../Data/Philip_data/AGNclasses_ElaisN1_v1.fits']
     for file in file_locations:
         data.append(open_fits(file))
 
@@ -81,7 +82,7 @@ if __name__ == "__main__":
         data[i] = add_location_column(data[i], all_locations, location)
 
     # Adding Optical ID's so we can add redshifts
-    Source_Name_to_optical_ID = pd.read_csv('../Data/ID_cross_matching/Source_Name_to_optical_ID.csv')
+    Source_Name_to_optical_ID = pd.read_csv('../../Data/Philip_data/ID_cross_matching/Source_Name_to_optical_ID.csv')
     pd.options.mode.chained_assignment = None
     # Columns which will replace some of their nan's, this has to be done since the source often uses -1 or -99 as nan
     columns_negative_one_to_nan = ['Donley', 'Lacy', 'Stern', 'Messias', 'KI', 'Ch2_Ch4', 'Ch4_24mu']
@@ -110,19 +111,19 @@ if __name__ == "__main__":
         data[i]['Classification'] = data[i].apply(create_classification, axis=1)
 
     # Saving data as csv
-    file_locations_csv = ['../Data/Cleaned/AGNclasses_Bootes_v1.csv',
-                          '../Data/Cleaned/AGNclasses_Lockman_v1.csv',
-                          '../Data/Cleaned/AGNclasses_ElaisN1_v1.csv']
+    file_locations_csv = ['../../Data/Philip_data/Cleaned/AGNclasses_Bootes_v1.csv',
+                          '../../Data/Philip_data/Cleaned/AGNclasses_Lockman_v1.csv',
+                          '../../Data/Philip_data/Cleaned/AGNclasses_ElaisN1_v1.csv']
     for df, file_name in zip(data, file_locations_csv):
         df.to_csv(file_name, index=False)
 
     # Combining all the data into one table and saving it as a csv
     combined = pd.concat(data)
-    combined.to_csv('../Data/Cleaned/Combined.csv', index=False)
+    combined.to_csv('../../Data/Philip_data/Cleaned/Combined.csv', index=False)
 
     # Also saving a version of combined where we drop the columns with no clear classification
     combined_secure_class = combined[combined['AGN_final'] != -1]
     combined_secure_class = combined_secure_class[combined_secure_class['RadioAGN_final'] != -1]
 
-    combined_secure_class.to_csv('../Data/Cleaned/Combined_secure_class.csv', index=False)
+    combined_secure_class.to_csv('../../Data/Philip_data/Cleaned/Combined_secure_class.csv', index=False)
 
