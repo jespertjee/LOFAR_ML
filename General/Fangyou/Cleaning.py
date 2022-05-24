@@ -19,6 +19,7 @@ def open_fits(filename: str):
 
     return data
 
+
 if __name__ == "__main__":
     # Opening file which has source_name to classification
     source_to_class = pd.read_csv("../../Data/Philip_data/Cleaned/Combined_secure_class.csv")
