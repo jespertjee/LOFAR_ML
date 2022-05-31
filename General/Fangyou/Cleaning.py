@@ -21,9 +21,9 @@ def open_fits(filename: str):
 
 
 if __name__ == "__main__":
-    # Opening file which has source_name to classification
-    source_to_class = pd.read_csv("../../Data/Philip_data/Cleaned/Combined_secure_class.csv")
-    source_to_class = source_to_class[["Source_Name", "Classification"]]
+    # Opening file which has source_name to classification and some other info we might use for classification
+    source_to_info = pd.read_csv("../../Data/Philip_data/Cleaned/Combined_secure_class.csv")
+    source_to_info = source_to_info[["Source_Name", "AGN_final", "RadioAGN_final", "Classification"]]
 
     # Opening raw data and matching it to source
     data = []
@@ -43,7 +43,7 @@ if __name__ == "__main__":
 
         # Fixing the source name column, since it is currently saved in bytes and should become a string
         dat['Source_Name'] = dat['Source_Name'].apply(lambda s: s.decode('utf-8'))
-        dat = dat.merge(source_to_class, on='Source_Name')
+        dat = dat.merge(source_to_info, on='Source_Name')
         data.append(data)
 
         # Saving data
