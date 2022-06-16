@@ -1,6 +1,7 @@
 import numpy as np
 from astropy.table import Table
 import pandas as pd
+from sklearn.impute import KNNImputer
 
 """
 Purpose of this file is to preprocess the data. Useless columns will be dropped and values imputed, etc.
@@ -27,7 +28,8 @@ if __name__ == "__main__":
                                        'Radio_excess', 'AGNfrac_af', 'AGNfrac_af_16', 'AGNfrac_cg_s_16']]
 
     # Opening raw data and matching it to source
-    data = []
+    filled_data = []
+    non_filled_data = []
 
     file_locations = [
         '../../Data/Fangyou_data/Original/Radio/Cross_match/bootes_final_cross_match_catalogue-v0.8.fits',
@@ -88,16 +90,19 @@ if __name__ == "__main__":
                                     'XrayHardness', 'ap_to_model_z_Subaru', 'Bw_rest', 'R_rest', 'I_rest',
                                     'z_Subaru_rest', 'H_rest', 'Ks_rest', 'ch1_rest', 'ch2_rest', 'ch3_rest',
                                     'ch4_rest', 'Z_SOURCE', 'Z_QUAL', 'y_rest'])
+            dat["Source"] = 'Bootes'
         if i==1:
             dat = dat.drop(columns=['Z_SOURCE', 'Z_QUAL', 'y_rest', '2RXS_ID', 'XMMSL2_ID',
                                     'ap_to_model_g', 'ap_to_model_r', 'g_rest', 'r_rest', 'i_rest', 'ch1_servs_rest',
                                     'ch2_servs_rest', 'ch1_swire_rest', 'ch2_swire_rest', 'ch3_swire_rest',
                                     'ch4_swire_rest'])
+            dat["Source"] = 'Elais-N1'
         if i==2:
             dat = dat.drop(columns=['2RXS_ID', 'XMMSL2_ID', 'ap_to_model_g', 'ap_to_model_r', 'g_rest',
                                     'g_rest', 'g_rcs_rest', 'r_rcs_rest', 'i_rcs_rest', 'z_rcs_rest', 'ch1_servs_rest',
                                     'ch2_servs_rest', 'ch1_swire_rest', 'ch2_swire_rest', 'ch3_swire_rest',
                                     'ch4_swire_rest', 'r_rest'])
+            dat["Source"] = 'Lockman'
 
         # Changing column to strings instead of bytes
         dat['S_Code'] = dat['S_Code'].apply(lambda s: s.decode('utf-8'))
@@ -118,13 +123,52 @@ if __name__ == "__main__":
         dat['Source_Name'] = dat['Source_Name'].apply(lambda s: s.decode('utf-8'))
         dat = dat.merge(source_to_class, on='Source_Name')
 
-        # Filling nan's with minima'
+        # Data where minima haven't been filled yet
+        non_filled_data.append(dat.copy())
+
+        """
+        # Filling nan's with minima
         for column in dat.columns[1:-5]:
             if column != "S_Code":
                 minimum = np.nanmin(dat[column])
                 dat[column] = dat[column].fillna(minimum)
         dat.to_csv(save_location, index=False)
+        """
 
-        data.append(dat)
-    combined = pd.concat(data)
-    combined.to_csv('../../Data/Fangyou_data/Cleaned/combined_preprocessed.csv', index=False)
+        filled_data.append(dat)
+
+    # Data that will be filled
+    combined_filled = pd.concat(filled_data)
+
+    imputer = KNNImputer(n_neighbors=5)
+
+    numeric_columns = combined_filled.select_dtypes(include='number').columns
+    combined_filled[numeric_columns] = imputer.fit_transform(combined_filled[numeric_columns])
+
+    combined_filled.to_csv('../../Data/Fangyou_data/Cleaned/combined_filled_preprocessed.csv', index=False)
+
+    # Data that won't be filled
+    combined_non_filled = pd.concat(non_filled_data)
+    combined_non_filled.to_csv('../../Data/Fangyou_data/Cleaned/combined_non_filled_preprocessed.csv', index=False)
+
+
+    """
+    # Before combining them, we can fill some columns with fluxes with a 'similar' filter
+    for i, dat in enumerate(non_filled_data):
+        if (i == 1) or (i == 2):
+            dat["ch1_flux_corr"] = dat["ch1_swire_flux_corr"]
+            dat["ch2_flux_corr"] = dat["ch2_swire_flux_corr"]
+            dat["ch3_flux_corr"] = dat["ch3_swire_flux_corr"]
+            dat["ch4_flux_corr"] = dat["ch4_swire_flux_corr"]
+
+            dat.drop(columns=["ch1_swire_flux_corr", "ch2_swire_flux_corr",
+                              "ch3_swire_flux_corr", "ch4_swire_flux_corr", ])
+
+            ch1_flux_corr
+            ch2_flux_corr
+            ch3_flux_corr
+            ch4_flux_corr
+    """
+
+
+
