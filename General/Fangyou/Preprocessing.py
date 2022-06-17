@@ -137,19 +137,82 @@ if __name__ == "__main__":
 
         filled_data.append(dat)
 
-    # Data that will be filled
-    combined_filled = pd.concat(filled_data)
-
-    imputer = KNNImputer(n_neighbors=5)
-
-    numeric_columns = combined_filled.select_dtypes(include='number').columns
-    combined_filled[numeric_columns] = imputer.fit_transform(combined_filled[numeric_columns])
-
-    combined_filled.to_csv('../../Data/Fangyou_data/Cleaned/combined_filled_preprocessed.csv', index=False)
-
     # Data that won't be filled
     combined_non_filled = pd.concat(non_filled_data)
     combined_non_filled.to_csv('../../Data/Fangyou_data/Cleaned/combined_non_filled_preprocessed.csv', index=False)
+
+    # Data that will be filled First we fill the missing values,
+    # the first strategy to use is see if there is a similar filter which we can use to get the data
+    for i, dat in enumerate(non_filled_data):
+        if i == 0:
+            # Filling columns by each other
+            dat["z_flux_corr"] = dat["z_flux_corr"].fillna(dat["z_Subaru_flux_corr"])
+            dat["z_Subaru_flux_corr"] = dat["z_Subaru_flux_corr"].fillna(dat["z_flux_corr"])
+            dat["z_rcs_flux_corr"] = dat["z_flux_corr"]
+            dat["z_hsc_flux_corr"] = dat["z_flux_corr"]
+
+            dat["i_hsc_flux_corr"] = dat["I_flux_corr"]
+            dat["i_rcs_flux_corr"] = dat["I_flux_corr"]
+            dat["i_flux_corr"] = dat["I_flux_corr"]
+
+            dat["y_hsc_flux_corr"] = dat["y_flux_corr"]
+
+            dat["r_flux_corr"] = dat["R_flux_corr"]
+            dat["r_hsc_flux_corr"] = dat["R_flux_corr"]
+            dat["r_rcs_flux_corr"] = dat["R_flux_corr"]
+
+            dat["ch1_swire_flux_corr"] = dat["ch1_flux_corr"]
+            dat["ch2_swire_flux_corr"] = dat["ch2_flux_corr"]
+            dat["ch3_swire_flux_corr"] = dat["ch3_flux_corr"]
+            dat["ch4_swire_flux_corr"] = dat["ch4_flux_corr"]
+
+            dat["ch1_servs_flux_corr"] = dat["ch1_flux_corr"]
+            dat["ch2_servs_flux_corr"] = dat["ch2_flux_corr"]
+        if i == 1:
+            dat["z_Subaru_flux_corr"] = dat["z_flux_corr"]
+            dat["z_rcs_flux_corr"] = dat["z_flux_corr"]
+
+            dat["i_rcs_flux_corr"] = dat["i_flux_corr"]
+            dat["I_flux_corr"] = dat["i_flux_corr"]
+
+            dat["g_rcs_flux_corr"] = dat["g_hsc_flux_corr"]
+
+            dat["R_flux_corr"] = dat["r_flux_corr"]
+            dat["r_rcs_flux_corr"] = dat["r_flux_corr"]
+
+            dat["ch1_flux_corr"] = dat["ch1_swire_flux_corr"]
+            dat["ch2_flux_corr"] = dat["ch2_swire_flux_corr"]
+            dat["ch3_flux_corr"] = dat["ch3_swire_flux_corr"]
+            dat["ch4_flux_corr"] = dat["ch4_swire_flux_corr"]
+        if i == 2:
+            dat["z_Subaru_flux_corr"] = dat["z_flux_corr"]
+            dat["z_hsc_flux_corr"] = dat["z_flux_corr"]
+
+            dat["R_flux_corr"] = dat["r_flux_corr"]
+            dat["r_hsc_flux_corr"] = dat["r_flux_corr"]
+
+            dat["I_flux_corr"] = dat["i_rcs_flux_corr"]
+            dat["i_hsc_flux_corr"] = dat["i_rcs_flux_corr"]
+            dat["i_flux_corr"] = dat["i_rcs_flux_corr"]
+
+            dat["g_hsc_flux_corr"] = dat["g_flux_corr"]
+
+            dat["ch1_flux_corr"] = dat["ch1_swire_flux_corr"]
+            dat["ch2_flux_corr"] = dat["ch2_swire_flux_corr"]
+            dat["ch3_flux_corr"] = dat["ch3_swire_flux_corr"]
+            dat["ch4_flux_corr"] = dat["ch4_swire_flux_corr"]
+
+        filled_data[i] = dat
+
+    combined_filled = pd.concat(filled_data)
+
+    # Imputing other values
+    numeric_columns = list(combined_filled.select_dtypes(include=[np.number]).columns.values)
+
+    imputer = KNNImputer(n_neighbors=2)
+    combined_filled[numeric_columns] = imputer.fit_transform(combined_filled[numeric_columns])
+
+    combined_filled.to_csv('../../Data/Fangyou_data/Cleaned/combined_filled_preprocessed.csv', index=False)
 
 
     """
