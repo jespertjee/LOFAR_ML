@@ -2,6 +2,7 @@ import numpy as np
 from astropy.table import Table
 import pandas as pd
 from sklearn.impute import KNNImputer
+from sklearn.linear_model import LinearRegression
 
 """
 Purpose of this file is to preprocess the data. Useless columns will be dropped and values imputed, etc.
@@ -21,7 +22,42 @@ def open_fits(filename: str):
     return data
 
 
+def impute_by_regression(data, column_x, column_y):
+    """
+    Impute column_y by column_x using linear regression
+
+    :param data:
+    :param column_x:
+    :param column_y:
+    :return:
+    """
+    # Selecting the data
+    relevant_data = data[[column_x, column_y]].dropna()
+
+    if len(relevant_data) == 0:
+        return data
+
+    X = relevant_data[column_x]
+    y = relevant_data[column_y]
+
+    X = X.to_numpy().reshape(-1, 1)
+
+    reg = LinearRegression().fit(X, y)
+
+    # Filling in missing y-data
+    X_for_missing_y = data[column_x][data[column_y].isna()].dropna()
+    if len(X_for_missing_y) == 0:
+        return data
+    predicted = reg.predict(X_for_missing_y.to_numpy().reshape(-1, 1))
+
+    predicted_df = pd.Series(predicted, index=X_for_missing_y.index)
+
+    data[column_y] = data[column_y].fillna(predicted_df)
+    return data
+
+
 if __name__ == "__main__":
+    pd.options.mode.chained_assignment = None
     # Opening file which has source_name to classification and some other info we might use for classification
     source_to_class = pd.read_csv("../../Data/Philip_data/Cleaned/Combined_secure_class.csv")
     source_to_class = source_to_class[["Source_Name", "AGN_final", "RadioAGN_final", "Classification",
@@ -126,19 +162,10 @@ if __name__ == "__main__":
         # Data where minima haven't been filled yet
         non_filled_data.append(dat.copy())
 
-        """
-        # Filling nan's with minima
-        for column in dat.columns[1:-5]:
-            if column != "S_Code":
-                minimum = np.nanmin(dat[column])
-                dat[column] = dat[column].fillna(minimum)
-        dat.to_csv(save_location, index=False)
-        """
-
         filled_data.append(dat)
 
     # Data that won't be filled
-    combined_non_filled = pd.concat(non_filled_data)
+    combined_non_filled = pd.concat(non_filled_data, ignore_index=True)
     combined_non_filled.to_csv('../../Data/Fangyou_data/Cleaned/combined_non_filled_preprocessed.csv', index=False)
 
     # Data that will be filled First we fill the missing values,
@@ -204,15 +231,57 @@ if __name__ == "__main__":
 
         filled_data[i] = dat
 
-    combined_filled = pd.concat(filled_data)
+    combined_filled = pd.concat(filled_data, ignore_index=True)
 
-    # Imputing other values
+    combined_filled.to_csv('../../Data/Fangyou_data/Cleaned/combined_filled_preprocessed2.csv', index=False)
+
+    # Using a correlation matrix to impute missing values
+    corr = combined_filled.drop(columns=["Source_Name", "S_Code",
+                       "EBV", "AGN_final", "RadioAGN_final",
+                       "Classification", "Radio_excess", "AGNfrac_af",
+                       "AGNfrac_af_16", "AGNfrac_cg_s_16", "Source"]).corr()
+    for column in combined_filled.columns:
+        if column not in ["Source_Name", "Total_flux", "Peak_flux", "S_Code", "EBV", "Z_BEST", "Mass_median",
+                          "Mass_l68", "Mass_u68", "AGN_final", "RadioAGN_final", "Classification", "Radio_excess",
+                          "AGNfrac_af", "AGNfrac_af_16", "AGNfrac_cg_s_16", "Source"]:
+            print(f"Imputing {column}")
+
+            sorted_corr = corr[column].sort_values(ascending=False)
+            # Only selecting correlations above 0.7
+            sorted_corr = sorted_corr[sorted_corr>0.7]
+            for x_column in sorted_corr.index:
+                # Not selecting itself of course, since that always has a correlation of 1
+                if x_column != column:
+                    combined_filled = impute_by_regression(combined_filled, x_column, column)
+
+    # Lastly the final missing values will simply be imputed with the minimum
+    for column in ["FUV_flux_corr", "NUV_flux_corr", "u_flux_corr", "Bw_flux_corr", "R_flux_corr", "I_flux_corr",
+                   "z_flux_corr", "z_Subaru_flux_corr", "F_MIPS_24", "F_PACS_100", "F_PACS_160", "F_SPIRE_250",
+                   "F_SPIRE_350", "F_SPIRE_500", "Mass_median", "Mass_l68", "Mass_u68"]:
+        minimum = np.nanmin(combined_filled[column])
+        combined_filled[column] = combined_filled[column].fillna(minimum)
+
+    # Setting any negative values to 0
     numeric_columns = list(combined_filled.select_dtypes(include=[np.number]).columns.values)
+    combined_filled[numeric_columns][combined_filled[numeric_columns]<0] = 0
 
-    imputer = KNNImputer(n_neighbors=2)
-    combined_filled[numeric_columns] = imputer.fit_transform(combined_filled[numeric_columns])
+
+    print(combined_filled.isna().sum())
 
     combined_filled.to_csv('../../Data/Fangyou_data/Cleaned/combined_filled_preprocessed.csv', index=False)
+
+    # Now we impute some missing columns by a multiple of a previous column using simple linear regression
+    # Missing values will also be imputed this way sometimes. We do this on the whole dataset since clearly we
+    # cannot use linear regression if we are missing the whole y-column
+
+
+
+    # Imputing other values
+
+
+    #imputer = KNNImputer(n_neighbors=2)
+    #combined_filled[numeric_columns] = imputer.fit_transform(combined_filled[numeric_columns])
+
 
 
     """
