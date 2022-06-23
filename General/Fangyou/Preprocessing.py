@@ -144,12 +144,12 @@ if __name__ == "__main__":
         dat['S_Code'] = dat['S_Code'].apply(lambda s: s.decode('utf-8'))
 
         # MIPS/PACS/SPIRE sets nan's to 1e20, so lets change that to nans
-        dat[dat["F_MIPS_24"] == 1e20]["F_MIPS_24"] = np.nan
-        dat[dat["F_PACS_100"] == 1e20]["F_PACS_100"] = np.nan
-        dat[dat["F_PACS_160"] == 1e20]["F_PACS_160"] = np.nan
-        dat[dat["F_SPIRE_250"] == 1e20]["F_SPIRE_250"] = np.nan
-        dat[dat["F_SPIRE_350"] == 1e20]["F_SPIRE_350"] = np.nan
-        dat[dat["F_SPIRE_500"] == 1e20]["F_SPIRE_500"] = np.nan
+        dat[dat["F_MIPS_24"] > 1e10]["F_MIPS_24"] = np.nan
+        dat[dat["F_PACS_100"] > 1e10]["F_PACS_100"] = np.nan
+        dat[dat["F_PACS_160"] > 1e10]["F_PACS_160"] = np.nan
+        dat[dat["F_SPIRE_250"] > 1e10]["F_SPIRE_250"] = np.nan
+        dat[dat["F_SPIRE_350"] > 1e10]["F_SPIRE_350"] = np.nan
+        dat[dat["F_SPIRE_500"] > 1e10]["F_SPIRE_500"] = np.nan
 
         # Setting negative values to nan (later they should be set to the minimum
         dat_num = dat.select_dtypes(include=[float])
@@ -162,7 +162,7 @@ if __name__ == "__main__":
         # Data where minima haven't been filled yet
         non_filled_data.append(dat.copy())
 
-        filled_data.append(dat)
+        filled_data.append(dat.copy())
 
     # Data that won't be filled
     combined_non_filled = pd.concat(non_filled_data, ignore_index=True)
@@ -270,37 +270,9 @@ if __name__ == "__main__":
 
     combined_filled.to_csv('../../Data/Fangyou_data/Cleaned/combined_filled_preprocessed.csv', index=False)
 
-    # Now we impute some missing columns by a multiple of a previous column using simple linear regression
-    # Missing values will also be imputed this way sometimes. We do this on the whole dataset since clearly we
-    # cannot use linear regression if we are missing the whole y-column
-
-
-
-    # Imputing other values
-
-
-    #imputer = KNNImputer(n_neighbors=2)
-    #combined_filled[numeric_columns] = imputer.fit_transform(combined_filled[numeric_columns])
-
-
-
-    """
-    # Before combining them, we can fill some columns with fluxes with a 'similar' filter
-    for i, dat in enumerate(non_filled_data):
-        if (i == 1) or (i == 2):
-            dat["ch1_flux_corr"] = dat["ch1_swire_flux_corr"]
-            dat["ch2_flux_corr"] = dat["ch2_swire_flux_corr"]
-            dat["ch3_flux_corr"] = dat["ch3_swire_flux_corr"]
-            dat["ch4_flux_corr"] = dat["ch4_swire_flux_corr"]
-
-            dat.drop(columns=["ch1_swire_flux_corr", "ch2_swire_flux_corr",
-                              "ch3_swire_flux_corr", "ch4_swire_flux_corr", ])
-
-            ch1_flux_corr
-            ch2_flux_corr
-            ch3_flux_corr
-            ch4_flux_corr
-    """
+    # Saving individual data
+    for s, loc in zip(['Bootes', 'Elais-N1', 'Lockman'], save_locations):
+        combined_filled[combined_filled['Source'] == s].to_csv(loc, index=False)
 
 
 
