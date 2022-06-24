@@ -61,7 +61,8 @@ if __name__ == "__main__":
     # Opening file which has source_name to classification and some other info we might use for classification
     source_to_class = pd.read_csv("../../Data/Philip_data/Cleaned/Combined_secure_class.csv")
     source_to_class = source_to_class[["Source_Name", "AGN_final", "RadioAGN_final", "Classification",
-                                       'Radio_excess', 'AGNfrac_af', 'AGNfrac_af_16', 'AGNfrac_cg_s_16']]
+                                       'Radio_excess', 'AGNfrac_af', 'AGNfrac_af_16', 'AGNfrac_cg_s_16',
+                                       'Xray', 'Opt_spec', 'Extended_radio']]
 
     # Opening raw data and matching it to source
     filled_data = []
