@@ -110,6 +110,32 @@ if __name__ == "__main__":
         # Adding new column with classification
         data[i]['Classification'] = data[i].apply(create_classification, axis=1)
 
+    # Adding IR data
+    skip_rows = list(range(37))
+    skip_rows.remove(34)
+
+    # Location of IR data
+    IR_data_locations = ['../../Data/Other/MIR_flag/Bootes.tsv',
+                         '../../Data/Other/MIR_flag/Lockman.tsv',
+                         '../../Data/Other/MIR_flag/Elais-N1.tsv',]
+    for i, loc in enumerate(IR_data_locations):
+        IR_data = pd.read_csv(loc, sep=';', skiprows=skip_rows, dtype={'IDOpt': str, 'IDSpitzer': str, 'IRAGN': str})
+
+        IR_data['IDOpt'] = IR_data['IDOpt'].str.replace(' ', '')
+        IR_data['IDSpitzer'] = IR_data['IDSpitzer'].str.replace(' ', '')
+        # Removing some weird artefacts
+        #IR_data['IDOpt'][IR_data['IDOpt'] == '-99'] = np.nan
+        #IR_data['IDSpitzer'][IR_data['IDSpitzer'] == '      '] = np.nan
+
+
+        data[i] = pd.merge(data[i], IR_data[['IDOpt', 'IRAGN']], how='left', left_on='IDOptical', right_on='IDOpt')
+        data[i] = data[i].drop(columns='IDOpt')
+        data[i] = pd.merge(data[i], IR_data[['IDSpitzer', 'IRAGN']], how='left', on='IDSpitzer')
+
+        # Combining the 2 merged columns
+        data[i]['IRAGN'] = data[i]['IRAGN_x'].fillna(data[i]['IRAGN_y']).drop(columns=['IRAGN_x', 'IRAGN_y'])
+        
+
     # Saving data as csv
     file_locations_csv = ['../../Data/Philip_data/Cleaned/AGNclasses_Bootes_v1.csv',
                           '../../Data/Philip_data/Cleaned/AGNclasses_Lockman_v1.csv',
