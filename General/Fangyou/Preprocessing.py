@@ -85,7 +85,7 @@ if __name__ == "__main__":
         # Columns to remove, namely the errors and the magnitudes (mag are simply conversions from flux,
         # so not interesting
         remove_columns_error = [column for column in dat.columns if 'err' in column.lower()]
-        dat = dat.drop(columns=remove_columns_error)
+        #dat = dat.drop(columns=remove_columns_error)
         remove_columns_mag = [column for column in dat.columns if 'mag' in column.lower()]
         dat = dat.drop(columns=remove_columns_mag)
 
@@ -106,7 +106,7 @@ if __name__ == "__main__":
                                   "Rhat_SPIRE_350", "Rhat_SPIRE_500", "n_eff_SPIRE_250", "n_eff_SPIRE_500",
                                   "n_eff_SPIRE_350", "Pval_res_250", "Pval_res_350", "Pval_res_500", "flag_spire_250",
                                   "flag_spire_350", "flag_spire_500", "Z_BEST_SOURCE", "Z_SPEC",
-                                  "z1_median", "z1_min", "z1_max", "z1_area", "E_Total_flux", "E_Peak_flux",
+                                  "z1_median", "z1_min", "z1_max", "z1_area", 
                                   "z2_median", "z2_min", "z2_max", "z2_area", "nfilt_eazy", "nfilt_atlas",
                                   "nfilt_ananna", "chi_r_best", "chi_r_stellar", "stellar_type", "AGN", "optAGN",
                                   "IRAGN", "XrayAGN",
@@ -145,12 +145,28 @@ if __name__ == "__main__":
         dat['S_Code'] = dat['S_Code'].apply(lambda s: s.decode('utf-8'))
 
         # MIPS/PACS/SPIRE sets nan's to 1e20, so lets change that to nans
-        dat[dat["F_MIPS_24"] > 1e10]["F_MIPS_24"] = np.nan
-        dat[dat["F_PACS_100"] > 1e10]["F_PACS_100"] = np.nan
-        dat[dat["F_PACS_160"] > 1e10]["F_PACS_160"] = np.nan
-        dat[dat["F_SPIRE_250"] > 1e10]["F_SPIRE_250"] = np.nan
-        dat[dat["F_SPIRE_350"] > 1e10]["F_SPIRE_350"] = np.nan
-        dat[dat["F_SPIRE_500"] > 1e10]["F_SPIRE_500"] = np.nan
+        dat["F_MIPS_24"][dat["F_MIPS_24"] > 1e10] = np.nan
+        dat["F_PACS_100"][dat["F_PACS_100"] > 1e10] = np.nan
+        dat["F_PACS_160"][dat["F_PACS_160"] > 1e10] = np.nan
+        dat["F_SPIRE_250"][dat["F_SPIRE_250"] > 1e10] = np.nan
+        dat["F_SPIRE_350"][dat["F_SPIRE_350"] > 1e10] = np.nan
+        dat["F_SPIRE_500"][dat["F_SPIRE_500"] > 1e10] = np.nan
+
+        # Similar thing for the errors
+        dat["FErr_MIPS_24_u"][dat["FErr_MIPS_24_u"] > 1e10] = np.nan
+        dat["FErr_MIPS_24_l"][dat["FErr_MIPS_24_l"] > 1e10] = np.nan
+        dat["FErr_PACS_100_u"][dat["FErr_PACS_100_u"] > 1e10] = np.nan
+        dat["FErr_PACS_100_l"][dat["FErr_PACS_100_l"] > 1e10] = np.nan
+        dat["FErr_PACS_160_u"][dat["FErr_PACS_160_u"] > 1e10] = np.nan
+        dat["FErr_PACS_160_l"][dat["FErr_PACS_160_l"] > 1e10] = np.nan
+        dat["FErr_SPIRE_250_u"][dat["FErr_SPIRE_250_u"] > 1e10] = np.nan
+        dat["FErr_SPIRE_250_l"][dat["FErr_SPIRE_250_l"] > 1e10] = np.nan
+        dat["FErr_SPIRE_350_u"][dat["FErr_SPIRE_350_u"] > 1e10] = np.nan
+        dat["FErr_SPIRE_350_l"][dat["FErr_SPIRE_350_l"] > 1e10] = np.nan
+        dat["FErr_SPIRE_500_u"][dat["FErr_SPIRE_500_u"] > 1e10] = np.nan
+        dat["FErr_SPIRE_500_l"][dat["FErr_SPIRE_500_l"] > 1e10] = np.nan
+
+        print(len(dat[dat["F_SPIRE_500"] > 1e10]["F_SPIRE_500"]))
 
         # Setting negative values to nan (later they should be set to the minimum
         dat_num = dat.select_dtypes(include=[float])
@@ -234,7 +250,7 @@ if __name__ == "__main__":
 
     combined_filled = pd.concat(filled_data, ignore_index=True)
 
-    combined_filled.to_csv('../../Data/Fangyou_data/Cleaned/combined_filled_preprocessed2.csv', index=False)
+    combined_filled.to_csv('../../Data/Fangyou_data/Cleaned/combined_using_similar_columns.csv', index=False)
 
     # Using a correlation matrix to impute missing values
     corr = combined_filled.drop(columns=["Source_Name", "S_Code",
@@ -269,11 +285,7 @@ if __name__ == "__main__":
 
     print(combined_filled.isna().sum())
 
-    combined_filled.to_csv('../../Data/Fangyou_data/Cleaned/combined_filled_preprocessed.csv', index=False)
-
-    # Saving individual data
-    for s, loc in zip(['Bootes', 'Elais-N1', 'Lockman'], save_locations):
-        combined_filled[combined_filled['Source'] == s].to_csv(loc, index=False)
+    combined_filled.to_csv('../../Data/Fangyou_data/Cleaned/combined_filled_with_regression.csv', index=False)
 
 
 
