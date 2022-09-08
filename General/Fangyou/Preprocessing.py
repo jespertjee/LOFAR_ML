@@ -90,7 +90,7 @@ if __name__ == "__main__":
         dat = dat.drop(columns=remove_columns_mag)
 
         # Drop generic columns
-        remove_columns_generic = ["RA", "DEC", "E_RA", "E_DEC", "E_Maj", "E_Min", "E_PA", "Maj", "Min",
+        remove_columns_generic = ["E_RA", "E_DEC", "E_Maj", "E_Min", "E_PA", "Maj", "Min",
                                   "PA", "DC_Maj", "DC_Min", "DC_PA", "Isl_rms", "FLAG_WORKFLOW", "Prefilter",
                                   "NoID", "lr_fin", "optRA", "optDec", "LGZ_Size", "LGZ_Width", "LGZ_PA", "Assoc",
                                   "Assoc_Qual", "Art_prob", "Blend_prob", "Hostbroken_prob", "Zoom_prob",
