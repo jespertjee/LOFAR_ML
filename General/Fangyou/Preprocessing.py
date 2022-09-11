@@ -133,12 +133,14 @@ if __name__ == "__main__":
                                     'ap_to_model_g', 'ap_to_model_r', 'g_rest', 'r_rest', 'i_rest', 'ch1_servs_rest',
                                     'ch2_servs_rest', 'ch1_swire_rest', 'ch2_swire_rest', 'ch3_swire_rest',
                                     'ch4_swire_rest'])
+            dat.to_csv("../../Data/Fangyou_data/Cleaned/Elais-N1.csv")
             dat["Source"] = 'Elais-N1'
         if i==2:
             dat = dat.drop(columns=['2RXS_ID', 'XMMSL2_ID', 'ap_to_model_g', 'ap_to_model_r', 'g_rest',
                                     'g_rest', 'g_rcs_rest', 'r_rcs_rest', 'i_rcs_rest', 'z_rcs_rest', 'ch1_servs_rest',
                                     'ch2_servs_rest', 'ch1_swire_rest', 'ch2_swire_rest', 'ch3_swire_rest',
                                     'ch4_swire_rest', 'r_rest'])
+            dat.to_csv("../../Data/Fangyou_data/Cleaned/Lockman.csv")
             dat["Source"] = 'Lockman'
 
         # Changing column to strings instead of bytes
@@ -180,6 +182,14 @@ if __name__ == "__main__":
         non_filled_data.append(dat.copy())
 
         filled_data.append(dat.copy())
+
+        # Saving each file separately
+        if i==0:
+            dat.to_csv("../../Data/Fangyou_data/Cleaned/Bootes.csv", index=False)
+        elif i==1:
+            dat.to_csv("../../Data/Fangyou_data/Cleaned/Elais-N1.csv", index=False)
+        elif i==2:
+            dat.to_csv("../../Data/Fangyou_data/Cleaned/Lockman.csv", index=False)
 
     # Data that won't be filled
     combined_non_filled = pd.concat(non_filled_data, ignore_index=True)
