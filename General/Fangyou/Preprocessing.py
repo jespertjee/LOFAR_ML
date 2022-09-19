@@ -117,9 +117,10 @@ if __name__ == "__main__":
         dat = dat.drop(columns=remove_columns_generic)
 
         # Converting units to microJanskies
-        dat[["Total_flux", "Peak_flux"]] = dat[["Total_flux", "Peak_flux"]]*10**6
-        dat[["F_PACS_100", "F_PACS_160", "F_SPIRE_250", "F_SPIRE_350", "F_SPIRE_500"]] = \
-            dat[["F_PACS_100", "F_PACS_160", "F_SPIRE_250", "F_SPIRE_350", "F_SPIRE_500"]]*10**3
+        # Skipping for now since it doesn't have an impact anyway
+        #dat[["Total_flux", "Peak_flux"]] = dat[["Total_flux", "Peak_flux"]]*10**6
+        #dat[["F_PACS_100", "F_PACS_160", "F_SPIRE_250", "F_SPIRE_350", "F_SPIRE_500"]] = \
+        #    dat[["F_PACS_100", "F_PACS_160", "F_SPIRE_250", "F_SPIRE_350", "F_SPIRE_500"]]*10**3
 
         # Drop table-specific columns
         if i==0:
