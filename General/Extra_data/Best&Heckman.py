@@ -25,6 +25,10 @@ def create_classification(row):
     return 'Radio-loud AGN'
 
 
+def asinh_mag_to_flux_density(mag, f0, b):
+    return 2 * b * f0 * np.arcsinh(mag/(-2.5/np.log(10)) - np.log(b))
+
+
 if __name__ == "__main__":
     BestHeckman = open_fits("../../Data/Best&Heckman/Best&Heckman2012.fit")
     SDSS = pd.read_csv("../../Data/Best&Heckman/SDSS.csv")
@@ -35,13 +39,20 @@ if __name__ == "__main__":
     data = BestHeckman.merge(SDSS, left_on='SimbadName', right_on='ident')
     data = data.drop(columns=['ident'])
 
-    # Converting AB mag to mJy
+    # Ensure columns are floats and removing weird symbols
     for column in ['mag_u', 'mag_g', 'mag_r', 'mag_i', 'mag_z']:
         # Replacing ~ with nan
         data[column][data[column] == '~'] = np.nan
 
         data[column] = data[column].astype(float)
-        data[column] = 3631 * 10**6 * 10**(-data[column]/2.5)
+
+    # Converting asinh mag to flux
+    data['mag_u'] = asinh_mag_to_flux_density(data['mag_u'], 3767, 1.4*10**-10)*10**6
+    data['mag_g'] = asinh_mag_to_flux_density(data['mag_g'], 3631, 0.9 * 10 ** -10) * 10 ** 6
+    data['mag_r'] = asinh_mag_to_flux_density(data['mag_r'], 3631, 1.2 * 10 ** -10) * 10 ** 6
+    data['mag_i'] = asinh_mag_to_flux_density(data['mag_i'], 3631, 1.8 * 10 ** -10) * 10 ** 6
+    data['mag_z'] = asinh_mag_to_flux_density(data['mag_z'], 3565, 7.4 * 10 ** -10) * 10 ** 6
+
 
     data = data.rename({'mag_u': 'flux_u', 'mag_g': 'flux_g', 'mag_r': 'flux_r', 'mag_i': 'flux_i', 'mag_z': 'flux_z'},
                        axis='columns')
