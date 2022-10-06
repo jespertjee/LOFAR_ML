@@ -53,6 +53,10 @@ if __name__ == "__main__":
     data['mag_i'] = asinh_mag_to_flux_density(data['mag_i'], 3631, 1.8 * 10 ** -10) * 10 ** 6
     data['mag_z'] = asinh_mag_to_flux_density(data['mag_z'], 3565, 7.4 * 10 ** -10) * 10 ** 6
 
+    # Some fluxes might be less than 0, so setting them to 0
+    for column in ['mag_u', 'mag_g', 'mag_r', 'mag_i', 'mag_z']:
+        data[column][data[column] < 0] = 0
+
 
     data = data.rename({'mag_u': 'flux_u', 'mag_g': 'flux_g', 'mag_r': 'flux_r', 'mag_i': 'flux_i', 'mag_z': 'flux_z'},
                        axis='columns')
