@@ -1,0 +1,167 @@
+================================================================================
+Title: ``Super-deblended'' Dust Emission in Galaxies: II. Far-Ir to 
+       (sub)millimeter photometry and high redshift galaxy candidates 
+       in the full Cosmos field 
+Authors: Jin S., Daddi E., Liu D., Smolvic V., Schinnerer E., Calabro A., 
+         Gu Q., Delhaize J., Delvecchio I., Gao Y., Salvato M., Puglisi A., 
+         Dickinson M., Bertoldi F., Sargent M., Novak M., Magdis G., 
+         Aretxaga I., Wilson G.W., Capak P.
+================================================================================
+Description of contents: One FITS file containing the tabular data detailed
+ in the Appendix Table. 
+
+System requirements: An FITS capable reader.
+
+Additional comments: 
+
+# ColumnName            $0  DataType DataUnit        Description
+ID                      $1  Integer                  ID   
+RA                      $2  Float    degree          Right Ascension in decimal degrees (J2000)
+Dec                     $3  Float    degree          Declination in decimal degrees (J2000)
+zphot                   $4  Float                    Photometric redshift from optical/near-infrared catalogs (1)
+zspec                   $5  Float                    Spectroscopic redshift
+zspec_ref               $6  Integer                  Reference code of spectroscopic redshift (2)
+Mstar                   $7  Double   Msun            Stellar mass in Chabrier IMF (3)
+SNR_IR                  $8  Double                   Super-deblend. 100um-to-1.2mm combined S/N
+goodArea                $9  Short                    Super-deblended "goodArea" flag (4)
+z_IR                    $10 Float                    Super-deblend. IR-to-radio photometric redshift (5)
+ez_IR                   $11 Float                    Super-deblend. IR-to-radio photometric redshift error (6)
+SFR_IR                  $12 Double   Msun/yr         Super-deblend. SED fit SFR
+eSFR_IR                 $13 Double   Msun/yr         Super-deblend. SED fit SFR error
+Kmag                    $14 Float                    Ks band magnitude (3)
+Fch1                    $15 Double   mJy             Spitzer IRAC 3.6um flux (7) 
+DFch1                   $16 Double   mJy             Spitzer IRAC 3.6um flux error (8)
+Fch2                    $17 Double   mJy             Spitzer IRAC 4.5um flux (7)
+DFch2                   $18 Double   mJy             Spitzer IRAC 4.5um flux error (8)
+Fch3                    $19 Double   mJy             Spitzer IRAC 5.8um flux (7)
+DFch3                   $20 Double   mJy             Spitzer IRAC 5.8um flux error (8)
+Fch4                    $21 Double   mJy             Spitzer IRAC 8.0um flux (7)
+DFch4                   $22 Double   mJy             Spitzer IRAC 8.0um flux error (8)
+F24                     $23 Double   mJy             Super-deblended Spitzer MIPS/24um flux
+DF24                    $24 Double   mJy             Error in F24 (9)
+F100                    $25 Double   mJy             Super-deblended Herschel/PACS 100um flux
+DF100                   $26 Double   mJy             Error in F100 (9)
+F160                    $27 Double   mJy             Super-deblended Herschel/PACS 160um flux
+DF160                   $28 Double   mJy             Error in F160 (9)
+F250                    $29 Double   mJy             Super-deblended Herschel/PACS 250um flux
+DF250                   $30 Double   mJy             Error in F250 (9)
+F350                    $31 Double   mJy             Super-deblended Herschel/PACS 350um flux
+DF350                   $32 Double   mJy             Error in F350 (9)
+F500                    $33 Double   mJy             Super-deblended Herschel/PACS 500um flux
+DF500                   $34 Double   mJy             Error in F500 (9)
+F850                    $35 Double   mJy             Super-deblended JCMT/SCUBA2 850um flux
+DF850                   $36 Double   mJy             Error in F850 (9)
+F1100                   $37 Double   mJy             Super-deblended ASTE/AzTEC 1.1mm flux
+DF1100                  $38 Double   mJy             Error in F1100 (9)
+F1200                   $39 Double   mJy             Super-deblended IRAM/MAMBO 1.2mm flux
+DF1200                  $40 Double   mJy             Error in F1200 (9)
+F10cm                   $41 Double   mJy             Super-deblended VLA 3GHz flux
+DF10cm                  $42 Double   mJy             Error in F10cm
+Smolcic                 $43 Short                    Flag of whether the original 10cm photometry is from Smolcic et al. (2017)
+F10cm_1arc5             $44 Double   mJy             Super-deblended flux in 1.5" convolved 3GHz image
+DF10cm_1arc5            $45 Double   mJy             Error in F10cm_1arc5
+F10cm_2arc              $46 Double   mJy             Super-deblended flux in 2" convolved 3GHz image
+DF10cm_2arc             $47 Double   mJy             Error in F10cm_2arc
+F20cm                   $48 Double   mJy             Super-deblended VLA 1.4GHz flux
+DF20cm                  $49 Double   mJy             Error in F20cm
+XFAGN                   $50 Float    10^{10} Lsun    Super-deblended SED best-fit AGN luminosity
+XEAGN                   $51 Float    10^{10} Lsun    Error in xfAGN
+XFTOT                   $52 Float    10^{10} Lsun    Super-deblended SED fit Total luminosity
+XETOT                   $53 Float    10^{10} Lsun    Super-deblend. SED fit Total luminosity error
+XF70                    $54 Float    mJy             Super-deblended SED predicted flux density at 70um
+XE70                    $55 Float    mJy             Error in xf70
+XF100                   $56 Float    mJy             Super-deblended SED predicted flux density at 100um
+XE100                   $57 Float    mJy             Error in xf100
+XF160                   $58 Float    mJy             Super-deblended SED predicted flux density at 160um
+XE160                   $59 Float    mJy             Error in xf160
+XF250                   $60 Float    mJy             Super-deblended SED predicted flux density at 250um
+XE250                   $61 Float    mJy             Error in xf250
+XF350                   $62 Float    mJy             Super-deblended SED predicted flux density at 350um
+XE350                   $63 Float    mJy             Error in xf350
+XF500                   $64 Float    mJy             Super-deblended SED predicted flux density at 500um
+XE500                   $65 Float    mJy             Error in xf500
+XF850                   $66 Float    mJy             Super-deblended SED predicted flux density at 850um
+XE850                   $67 Float    mJy             Error in xf850
+XF1100                  $68 Double   mJy             Super-deblended SED predicted flux density at 1.1mm
+XE1100                  $69 Double   mJy             Error in xf1100
+XF1200                  $70 Double   mJy             Super-deblended SED predicted flux density at 1.2mm
+XE1200                  $71 Double   mJy             Error in xf1200
+XF2000                  $72 Double   mJy             Super-deblended SED predicted flux density at 2.0mm
+XE2000                  $73 Double   mJy             Error in xf2000
+XF3000                  $74 Double   mJy             Super-deblended SED predicted flux density at 3.0mm
+XE3000                  $75 Double   mJy             Error in xf3000
+XF10cm                  $76 Double   mJy             Super-deblended SED predicted flux density at 10cm
+XE10cm                  $77 Double   mJy             Error in xf10cm
+XF20cm                  $78 Double   mJy             Super-deblended SED predicted flux density at 20cm
+XE20cm                  $79 Double   mJy             Error in xf20cm
+Ubest                   $80 Float                    Super-deblended SED best-fit dust template's mean interstellar radiation field strength(10)
+Chi2_min                $81 Double                   Super-deblended SED chi-sq. of fitted data points
+S_chi2_min              $82 Double                   Super-deblended SED chi-sq. of fitted data points for stellar component of the SED
+R_Chi2_min              $83 Double                   Super-deblended SED chi-sq. of fitted data points for dust component of the SED
+Type_FIR                $84 Short                    Super-deblended SED fitting's Type_FIR flag (11)
+Type_SED                $85 Short                    Super-deblended SED fitting's Type_SED flag (12)
+Type_AGN                $86 Short                    Super-deblended SED fitting's Type_SED flag (13)
+--------------------------------------------------------------------------------
+Note (1):
+	photometric redshifts are taken from Laigle et al. 2016 and Muzzin et al. 2013;
+	-99 = no reliable redshift.
+Note (2):
+	-99 = no reliable redshift
+	01 = Abolfathi, B., Aguado, D. S., Aguilar, G., et al. 2018, ApJS, 235, 42;
+	02 = Balogh, M. L., McGee, S. L., Mok, A., et al. 2014, MNRAS, 443, 2679;
+	03 = Coil, A. L., Blanton, M. R., Burles, S. M., et al. 2011, ApJ, 741, 8;
+	04 = Colless, M., Dalton, G., Maddox, S., et al. 2001, MNRAS, 328, 1039;
+	05 = Comparat, J., Richard, J., Kneib, J.-P., et al. 2015, A&A, 575, A40;
+	06 = Faure, C., Anguita, T., Alloin, D., et al. 2011, A&A, 529, A72;
+	07 = Fu, H., Myers, A. D., Djorgovski, S. G., & Yan, L. 2011, ApJ, 733, 103;
+	08 = Hasinger, G., Capak, P., Salvato, M., et al. 2018, ApJ, 858, 77;
+	09 = Kartaltepe, J. S., Sanders, D. B., Le Floc’h, E., et al. 2010, ApJ, 709, 572,
+	     Kartaltepe et al. WFC3 Grism redshift;
+	10 = Kriek, M., Shapley, A. E., Reddy, N. A., et al. 2015, ApJS, 218, 15;
+	11 = Lilly, S. J., Le Fèvre, O., Renzini, A., et al. 2007, ApJS, 172, 70,
+	     Lilly, S. J., Le Brun, V., Maier, C., et al. 2009, ApJS, 184, 218;
+	12 = Marchesi, S., Civano, F., Elvis, M., et al. 2016, ApJ, 817, 34;
+	13 = Marsan, Z. C., Marchesini, D., Brammer, G. B., et al. 2017, ApJ, 842, 21;
+	14 = Masters, D. C., Stern, D. K., Cohen, J. G., et al. 2017, ApJ, 841, 111;
+	15 = Momcheva, I. G., Brammer, G. B., van Dokkum, P. G., et al. 2016, ApJS, 225, 27;
+	16 = Nanayakkara, T., Glazebrook, K., Kacprzak, G. G., et al. 2016, ApJ, 828, 21;
+	17 = Onodera, M., Renzini, A., Carollo, M., et al. 2012, ApJ, 755, 26,
+	     Onodera, M., Carollo, C. M., Renzini, A., et al. 2015, ApJ, 808, 161;
+	18 = Perna, M., Brusa, M., Salvato, M., et al. 2015, A&A, 583, A72;
+	19 = Prescott, M. K. M., Impey, C. D., Cool, R. J., & Scoville, N. Z. 2006, ApJ, 644, 100;
+	20 = Roseboom, I. G., Ivison, R. J., Greve, T. R., et al. 2012, MNRAS, 419, 2758;
+	21 = Silverman, J. D., Kashino, D., Sanders, D., et al. 2015, ApJS, 220, 12;
+	22 = Skrutskie, M. F., Cutri, R. M., Stiening, R., et al. 2006, AJ, 131, 1163;
+	23 = Tasca, L. A. M., Le Fèvre, O., Ribeiro, B., et al. 2017, A&A, 600, A110;
+	24 = Trump, J. R., Impey, C. D., McCarthy, P. J., et al. 2007, ApJS, 172, 383;
+	25 = van der Wel, A., Noeske, K., Bezanson, R., et al. 2016, ApJS, 223, 29;
+	26 = Marcella Brusa et al. XSHOOTER redshift;
+	27 = Yun, M. S., Aretxaga, I., Gurwell, M. A., et al. 2015, MNRAS, 454, 3485.
+Note (3):
+	From Laigle et al. (2016) and Muzzin et al. (2013).
+Note (4):
+	Equals 1 if source locates in UltraVISTA  area.
+Note (5):
+	If a reliable spectroscopic redshift exists, then fixed to it, 
+        otherwise SED fitted photometric redshift.
+Note (6): 
+	0: a reliable spectroscopic redshift exists;
+	-99: null.
+Note (7):
+	From Laigle et al. (2016) for source with ID < 1E7, and Sanders et al. (2007) for source with ID > 1E7;
+	-99: null. 
+Note (8):
+	1E10: null. 
+Note (9):
+	1E10: no measurement, excluded sources in Super-deblending (see Section 4.3).
+Note (10):
+	A value of 101 indicates it's a starburst template with a constant <U>~31 (e.g., Bethermin et al., 2015, A&A 573, A113, Figure 7).
+Note (11):
+	Flag of whether the source has SNR_IR>5, so that we only fit FIR+mm data points for the dust SED component.
+Note (12):
+	Flag of whether the source is classified as a starburst (1) or main-sequence galaxy (-1) or unclassified (0).
+Note (13):
+	Flag of whether the source is classified as a radio-loud AGN.
+--------------------------------------------------------------------------------
+
+================================================================================
